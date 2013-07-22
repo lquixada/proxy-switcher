@@ -1,0 +1,36 @@
+set_proxy() {
+	gsettings set org.gnome.system.proxy mode "$1"
+	gsettings set org.gnome.system.proxy.http host "$2"
+	gsettings set org.gnome.system.proxy.http port $3
+}
+
+reset_proxy() {
+	# Reseting to previous config
+	set_proxy $PREV_MODE $PREV_HOST $PREV_PORT
+}
+
+# Saving previous config
+PREV_MODE=`gsettings get org.gnome.system.proxy mode`
+PREV_HOST=`gsettings get org.gnome.system.proxy.http host`
+PREV_PORT=`gsettings get org.gnome.system.proxy.http port`
+
+# Grab command options values
+while getopts "p:c:" optname; do
+	 case "${optname}" in
+		h) HOST="${OPTARG}" ;;
+		p) PORT="${OPTARG}" ;;
+		c) CMD="${OPTARG}" ;;
+	 esac
+done
+
+# Setting custom config
+set_proxy 'manual' 'localhost' $PORT
+
+# SIGINT=2, SIGTERM=15, SIGHUP=1
+trap "reset_proxy" 2 15 1
+
+#java -jar /home/lquixada/Applications/webscarab/webscarab.jar
+
+$CMD
+
+reset_proxy
