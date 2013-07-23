@@ -15,7 +15,7 @@ PREV_HOST=`gsettings get org.gnome.system.proxy.http host`
 PREV_PORT=`gsettings get org.gnome.system.proxy.http port`
 
 # Grab command options values
-while getopts "p:c:" optname; do
+while getopts "h:p:c:" optname; do
 	 case "${optname}" in
 		h) HOST="${OPTARG}" ;;
 		p) PORT="${OPTARG}" ;;
@@ -28,8 +28,6 @@ set_proxy 'manual' 'localhost' $PORT
 
 # SIGINT=2, SIGTERM=15, SIGHUP=1
 trap "reset_proxy" 2 15 1
-
-#java -jar /home/lquixada/Applications/webscarab/webscarab.jar
 
 $CMD
 
